@@ -1,5 +1,6 @@
 using System.Reflection.Metadata;
 using Expense.Service;
+using Expense.Service.Exceptions;
 using Expense.Service.Expense;
 using Expense.Service.Projects;
 using Xunit;
@@ -44,17 +45,23 @@ namespace Expense.Service.Test
         [Fact]
         public void Should_return_other_expense_type_if_project_is_external_and_has_other_name()
         {
-            // given
+            //given
+            Project project = new Project(ProjectType.EXTERNAL, "liwenrui");
             // when
+            ExpenseType expenseType = ExpenseService.GetExpenseCodeByProjectTypeAndName(project);
             // then
+            Assert.Equal(expenseType, ExpenseType.OTHER_EXPENSE);
         }
 
         [Fact]
         public void Should_throw_unexpected_project_exception_if_project_is_invalid()
         {
-            // given
+            //given
+            Project project = new Project(ProjectType.UNEXPECTED_PROJECT_TYPE, "liwenrui");
             // when
             // then
+            Assert.Throws<UnexpectedProjectTypeException>(() =>
+                ExpenseService.GetExpenseCodeByProjectTypeAndName(project));
         }
     }
 }
